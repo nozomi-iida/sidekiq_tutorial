@@ -31,3 +31,20 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - ./tmp/db/data:/var/lib/postgresql/data:z
+
+  redis:
+    image: 'redis:latest'
+
+  sidekiq:
+    build: .
+    command: sidekiq
+    volumes:
+      - ./:/app
+      - ignore_dir:/app/tmp
+      - ignore_dir:/app/public
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: development
